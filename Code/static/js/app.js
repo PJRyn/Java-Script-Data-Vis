@@ -47,7 +47,7 @@ function barChart (ID) {
     }];
     var layout = {
       title: "Top 10 Bacteria Found",
-      width: 900,
+      width: 500,
       height: 500
     };
     //Draw plot with Plotly
@@ -105,11 +105,48 @@ function displayMetadata (ID) {
   });
 };
 
+//Bounus gaugeChart display
+function gaugeChart (ID) {
+  d3.json(url).then(function(data) {
+    //filter for the id that matches the ID selected
+    var metadata = data.metadata.filter(sampleobject => sampleobject.id == ID);
+    //in metadata find how many washes per week
+    var washPer = metadata[0].wfreq;
+    //Create data for gauge
+    var gaugeData = [
+      {
+        domain: washPer,
+        value: washPer,
+        title: { text: "Scrubs Per Week" },
+        type: "indicator",
+        mode: "gauge+number",
+        gauge: {
+          axis: { range: [null, 9] },
+          steps: [
+            { range: [0, 1], color: "lightgray" },
+            { range: [1, 2], color: "lightgray" },
+            { range: [2, 3], color: "lightgray" },
+            { range: [3, 4], color: "lightgray" },
+            { range: [4, 5], color: "lightgray" },
+            { range: [5, 6], color: "lightgray" },
+            { range: [6, 7], color: "lightgray" },
+            { range: [7, 8], color: "lightgray" },
+            { range: [8, 9], color: "lightgray" },
+          ]
+        }
+      }
+    ];
+    // Print the guage
+    Plotly.newPlot("gauge", gaugeData);
+  });
+};
+
 //function runs the data visualisations and page changes based off of the dataSelect()
 function optionChanged(ID) {
   barChart(ID);
   bubbleChart(ID);
   displayMetadata(ID);
+  gaugeChart(ID);
 };
 
 //runs the data visualisations based off of the dataSelect()
