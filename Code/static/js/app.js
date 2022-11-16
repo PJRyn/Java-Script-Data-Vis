@@ -17,6 +17,7 @@ function dataSelect() {
   });
 
 };
+
 //Run the data selct function allowing the user to select an ID
 dataSelect();
 
@@ -31,24 +32,62 @@ function barChart (ID) {
     // Gving a var for otuId so it can be called later
     var otuId = filteredData[0].otu_ids;
     // Slice, reverse then put OTU for otuIds for the y axis
-    var yaxis1 = otuId.slice(0,10).reverse().map(ids => "OTU" + ids);
+    var yaxis = otuId.slice(0,10).reverse().map(ids => "OTU" + ids);
+    // Slice, reverse sampleval for the x axis
+    var xaxis = sampleValues.slice(0,10).reverse();
     // Gving a var for otu lables so it can be called later
     var otuLabels = filteredData[0].otu_labels;
     // Format for the plot
     var formatting = [{
       type: 'bar',
-      x: sampleValues.slice(0,10).reverse(),
-      y: yaxis1,
+      x: xaxis,
+      y: yaxis,
       text: otuLabels,
       orientation: 'h'
     }];
+    var layout = {
+      title: "Top 10 Bacteria Found",
+      width: 900,
+      height: 500
+    };
     //Draw plot with Plotly
-    Plotly.newPlot('bar', formatting);
+    Plotly.newPlot('bar', formatting, layout);
   });
 };
 
+// Visualises a bubble chart from the selected ID
 function bubbleChart (ID){
   console.log("Hello World!", ID);
+  d3.json(url).then(function(data) {
+    //filter for the id that matches the ID selected
+    var filteredData = data.samples.filter(sampleobject => sampleobject.id == ID);
+    // Gving a var for sampleValues so it can be called later
+    var sampleValues = filteredData[0].sample_values;
+    // Gving a var for otuId so it can be called later
+    var otuId = filteredData[0].otu_ids;
+    // Gving a var for otu lables so it can be called later
+    var otuLabels = filteredData[0].otu_labels;
+    // Format for the plot
+    var formatting = [{
+      type: 'bubble',
+      x: otuId,
+      y: sampleValues,
+      text: otuLabels,
+      mode: 'markers',
+      marker: {
+        size: sampleValues,
+        color: otuId,
+        colorscale: 'Earth'
+      }
+    }];
+    var layout = {
+      title: "Bacteria Found",
+      width: 1300,
+      height: 600 
+    };
+    //Draw plot with Plotly
+    Plotly.newPlot('bubble', formatting, layout);
+  });
 };
 
 //function runs the data visualisations and page changes based off of the dataSelect()
