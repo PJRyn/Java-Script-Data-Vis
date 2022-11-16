@@ -24,39 +24,38 @@ dataSelect();
 function barChart (ID) {
   //Open the json URL
   d3.json(url).then(function(data) {
-  
-    //1. Find the top 10 OTU values
-  
     //filter for the id that matches the ID selected
     var filteredData = data.samples.filter(sampleobject => sampleobject.id == ID);
     // Gving a var for sampleValues so it can be called later
     var sampleValues = filteredData[0].sample_values;
-    //sorting the sampleVales in decending order (they seem sorted already but there are too many to check)
-    sampleValues.sort(function compareFunction(firstNum, secondNum) {
-      return secondNum - firstNum;
-    });
-    console.log("sampleValues",sampleValues);
-
-    
-    // 2. Create the horizontal bar chart
-
-    var data = [{
+    // Gving a var for otuId so it can be called later
+    var otuId = filteredData[0].otu_ids;
+    // Slice, reverse then put OTU for otuIds for the y axis
+    var yaxis1 = otuId.slice(0,10).reverse().map(ids => "OTU" + ids);
+    // Gving a var for otu lables so it can be called later
+    var otuLabels = filteredData[0].otu_labels;
+    // Format for the plot
+    var formatting = [{
       type: 'bar',
-      x: [20, 14, 23],
-      y: ['giraffes', 'orangutans', 'monkeys'],
+      x: sampleValues.slice(0,10).reverse(),
+      y: yaxis1,
+      text: otuLabels,
       orientation: 'h'
     }];
-    
-    Plotly.newPlot('bar', data);
+    //Draw plot with Plotly
+    Plotly.newPlot('bar', formatting);
   });
+};
+
+function bubbleChart (ID){
+  console.log("Hello World!", ID);
 };
 
 //function runs the data visualisations and page changes based off of the dataSelect()
 function optionChanged(ID) {
   barChart(ID);
+  bubbleChart(ID);
 };
-
-
 
 //runs the data visualisations based off of the dataSelect()
 optionChanged();
