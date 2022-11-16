@@ -57,7 +57,6 @@ function barChart (ID) {
 
 // Visualises a bubble chart from the selected ID
 function bubbleChart (ID){
-  console.log("Hello World!", ID);
   d3.json(url).then(function(data) {
     //filter for the id that matches the ID selected
     var filteredData = data.samples.filter(sampleobject => sampleobject.id == ID);
@@ -90,10 +89,27 @@ function bubbleChart (ID){
   });
 };
 
+// Display Metadata
+function displayMetadata (ID) {
+  d3.json(url).then(function(data) {
+    //filter for the id that matches the ID selected
+    var metadata = data.metadata.filter(sampleobject => sampleobject.id == ID);
+    // Selects entry on the html
+    var sampleMeta = d3.select("#sample-metadata");
+    //clear the display to prevent stacking inputs
+    sampleMeta.html("");
+    // add metadata to the display
+    Object.entries(metadata[0]).forEach(([type, entry]) => {
+      sampleMeta.append("h6").text(`${type}: ${entry}`);
+    });
+  });
+};
+
 //function runs the data visualisations and page changes based off of the dataSelect()
 function optionChanged(ID) {
   barChart(ID);
   bubbleChart(ID);
+  displayMetadata(ID);
 };
 
 //runs the data visualisations based off of the dataSelect()
