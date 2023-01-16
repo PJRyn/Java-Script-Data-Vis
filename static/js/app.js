@@ -13,8 +13,19 @@ function dataSelect() {
       .append("option")
       .text(name)
       .property("value", name);
+
     });
+    //Select the first name to visualise when the page is first loaded
+    var firstSample = data.names[0];
+    barChart(firstSample);
+    bubbleChart(firstSample);
+    displayMetadata(firstSample);
+    gaugeChart(firstSample);
   });
+
+};
+
+function firstLoad(D) {
 
 };
 
